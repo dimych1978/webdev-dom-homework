@@ -131,6 +131,9 @@
       newCommentsEl.appendChild(newCommentEl);
 
       commentsEl.innerHTML = commentsOld + newCommentsEl.innerHTML;
+
+      nameEl.value = '';
+      textEl.value = '';
     }
 
     buttonEl.addEventListener("click", addComment);
