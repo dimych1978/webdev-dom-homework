@@ -72,6 +72,7 @@
     const commentsEl = document.querySelector(".comments");
     const commentEl = document.querySelector(".comment");
 
+    const form = document.querySelector(".add-form");
     const nameEl = document.querySelector(".add-form-name");
     const textEl = document.querySelector(".add-form-text");
     const buttonEl = document.querySelector(".add-form-button");
@@ -97,6 +98,9 @@
     newLikesCounter.className = "likes-counter";
     const newLikeButton = document.createElement("button");
     newLikeButton.className = "like-button";
+    const deleteButtonEl = document.createElement("button");
+    deleteButtonEl.className = "add-form-button";
+    deleteButtonEl.textContent = "Удалить последний комментарий";
 
     const titleEl = document.createElement("h3");
     const dateEl = document.createElement("time");
@@ -132,8 +136,10 @@
 
       commentsEl.innerHTML = commentsOld + newCommentsEl.innerHTML;
 
-      nameEl.value = '';
-      textEl.value = '';
+      nameEl.value = "";
+      textEl.value = "";
+
+      form.appendChild(deleteButtonEl);
     }
 
     buttonEl.addEventListener("click", addComment);
@@ -161,6 +167,9 @@
       })
     );
 
+    deleteButtonEl.addEventListener("click", () => {
+      commentsEl.removeChild(commentsEl.lastChild);
+    });
     console.log("It works!");
   </script>
 </html>
