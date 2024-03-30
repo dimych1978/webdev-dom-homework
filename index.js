@@ -77,9 +77,9 @@ const likesHandler = () => {
 
 const deleteHandler = () => {
   const deleteButtons = document.querySelectorAll(".delete-button");
-  for (const deleteHandler of deleteButtons) {
-    deleteHandler.addEventListener("click", () => {
-      const index = deleteHandler.dataset.index;
+  for (const deleteButton of deleteButtons) {
+    deleteButton.addEventListener("click", () => {
+      const index = deleteButton.dataset.index;
       comments.splice(index, 1);
       renderComments();
     });
