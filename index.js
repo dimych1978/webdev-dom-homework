@@ -1,11 +1,12 @@
 let counter = 0;
-const date = `${new Date().toLocaleDateString("ru-RU", {
+const date = () => `${new Date().toLocaleDateString("ru-RU", {
   day: "2-digit",
   month: "2-digit",
   year: "2-digit",
 })} ${new Date().toLocaleTimeString("ru-RU", {
   hour: "2-digit",
   minute: "2-digit",
+  second: '2-digit'
 })}`;
 
 const comments = [
@@ -127,11 +128,11 @@ const dateEl = document.createElement("time");
 
 function addComment() {
   titleEl.textContent = nameEl.value;
-  dateEl.textContent = date;
+  dateEl.textContent = date();
   commentTextEl.textContent = textEl.value;
   comments.push({
     name: titleEl.textContent,
-    date: date,
+    date: date(),
     text: commentTextEl.textContent,
     isLike: false,
     likes: counter,
