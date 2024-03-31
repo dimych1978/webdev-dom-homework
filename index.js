@@ -6,7 +6,6 @@ const date = () => `${new Date().toLocaleDateString("ru-RU", {
 })} ${new Date().toLocaleTimeString("ru-RU", {
   hour: "2-digit",
   minute: "2-digit",
-  second: '2-digit'
 })}`;
 
 const comments = [
