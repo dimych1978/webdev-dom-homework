@@ -64,6 +64,7 @@ body {
 
 .comment-text {
   font-size: 32px;
+  white-space: pre-line
 }
 
 .likes {
@@ -163,10 +164,19 @@ body {
   cursor: pointer;
 }
 
-.edit-form-text{
+.edit-form-text {
+  margin-top: 12px;
+  padding: 22px;
+  resize: none;
   width: 500px;
   font-size: 16px;
   font-family: Helvetica;
+  white-space: pre-line;
   border-radius: 8px;
   border: none;
+}
+.quote {
+  font-size: 16px;
+  background-color: #fff;
+  color: #202020;
 }

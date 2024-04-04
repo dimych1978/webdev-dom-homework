@@ -1,12 +1,13 @@
 let counter = 0;
-const date = () => `${new Date().toLocaleDateString("ru-RU", {
-  day: "2-digit",
-  month: "2-digit",
-  year: "2-digit",
-})} ${new Date().toLocaleTimeString("ru-RU", {
-  hour: "2-digit",
-  minute: "2-digit",
-})}`;
+const date = () =>
+  `${new Date().toLocaleDateString("ru-RU", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "2-digit",
+  })} ${new Date().toLocaleTimeString("ru-RU", {
+    hour: "2-digit",
+    minute: "2-digit",
+  })}`;
 
 const comments = [
   {
@@ -28,33 +29,61 @@ const comments = [
 ];
 
 const commentsBlock = document.querySelector(".comments");
-const commentsEl = document.querySelectorAll(".comment");
 const form = document.querySelector(".add-form");
 const nameEl = document.querySelector(".add-form-name");
 const textEl = document.querySelector(".add-form-text");
 const buttonEl = document.querySelector(".add-form-button");
+const commentTextEl = document.createElement("article");
+commentTextEl.className = "comment-text";
 
 const editText = document.createElement("textarea");
 editText.className = "edit-form-text";
 editText.setAttribute("type", "textarea");
 editText.setAttribute("rows", "4");
 
+let quoteVariable;
+const getThisComment = thisComment => {
+  quoteVariable = thisComment;
+};
+
+const answerHandler = () => {
+  const commentAnswers = document.querySelectorAll(".comment");
+  for (const comment of commentAnswers) {
+    comment.addEventListener("click", () => {
+      const index = comment.dataset.comment;
+      /*Чтобы отобразился комментируемый текс в дополнение к цитате после первого бэктика добавить строку:
+      >>${comments[index].text}\n \n
+      */
+      const textAnswer = `${comments[index].name}, `;
+      textEl.replaceWith(editText);
+      editText.value = textAnswer;
+      getThisComment(
+        `<span>${comments[index].name}</span> <br/> <span/>${comments[index].text}</span >`
+      );
+    });
+  }
+};
 const editHandler = () => {
-  const editComment = document.querySelectorAll(".comment-text");
+  const editComments = document.querySelectorAll(".comment-text");
   const edits = document.querySelectorAll(".edit-button");
   for (const edit of edits) {
     const index = edit.dataset.index;
-    edit.addEventListener("click", () => {
+    edit.addEventListener("click", e => {
+      e.stopPropagation();
       commentTextEl.append(editText);
+      // При выборе  комментария для ответа, но без отправки при нажатии на кнопку редактирования существующего комментария пропадает поле для ввода ответа. Эта строка и две ее копии в условиях ниже являются костылем для корректной работы приложения
+      nameEl.insertAdjacentElement("afterend", textEl);
+      editText.addEventListener("click", e => e.stopPropagation());
       if (!comments[index].isEdit) {
+        nameEl.insertAdjacentElement("afterend", textEl);
         edit.textContent = "Сохранить";
-        editComment[index].parentElement.appendChild(editText);
-        editText.value = editComment[index].textContent;
+        editComments[index].parentElement.appendChild(editText);
+        editText.value = editComments[index].textContent;
       } else {
+        nameEl.insertAdjacentElement("afterend", textEl);
         edit.textContent = "Редактировать комментарий";
-        editComment[index].textContent = editText.value;
+        editComments[index].textContent = editText.value;
         comments[index].text = editText.value;
-        editText.remove();
       }
       comments[index].isEdit = !comments[index].isEdit;
     });
@@ -64,7 +93,8 @@ const editHandler = () => {
 const likesHandler = () => {
   const likesButtons = document.querySelectorAll(".like-button");
   for (const likeButton of likesButtons) {
-    likeButton.addEventListener("click", () => {
+    likeButton.addEventListener("click", e => {
+      e.stopPropagation();
       const index = likeButton.dataset.index;
       comments[index].isLike = !comments[index].isLike;
       comments[index].isLike
@@ -78,7 +108,8 @@ const likesHandler = () => {
 const deleteHandler = () => {
   const deleteButtons = document.querySelectorAll(".delete-button");
   for (const deleteButton of deleteButtons) {
-    deleteButton.addEventListener("click", () => {
+    deleteButton.addEventListener("click", e => {
+      e.stopPropagation();
       const index = deleteButton.dataset.index;
       comments.splice(index, 1);
       renderComments();
@@ -89,12 +120,15 @@ const deleteHandler = () => {
 const renderComments = () => {
   const innerComments = comments
     .map((comment, index) => {
-      return `<li class="comment">
+      return `<li class="comment" data-comment = ${index}>
           <header class="comment-header">
             <h3>${comment.name}</h3>
             <time>${comment.date}</time>
           </header>
-          <section class="comment-body">
+          <section class="comment-body" data-index=${index}>
+            <blockquote class='quote'>${
+              comment.quote ? comment.quote : ""
+            }</blockquote>
             <article class="comment-text">
               ${comment.text}
             </article>
@@ -116,11 +150,9 @@ const renderComments = () => {
   deleteHandler();
   likesHandler();
   editHandler();
+  answerHandler();
 };
 renderComments();
-
-const commentTextEl = document.createElement("article");
-commentTextEl.className = "comment-text";
 
 const titleEl = document.createElement("h3");
 const dateEl = document.createElement("time");
@@ -128,16 +160,21 @@ const dateEl = document.createElement("time");
 function addComment() {
   titleEl.textContent = nameEl.value;
   dateEl.textContent = date();
-  commentTextEl.textContent = textEl.value;
+  commentTextEl.textContent = textEl.value || editText.value;
   comments.push({
-    name: titleEl.textContent,
+    name: titleEl.textContent.replaceAll("<", "&lt;").replaceAll(">", "&gt;"),
     date: date(),
-    text: commentTextEl.textContent,
+    text: commentTextEl.textContent
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;"),
+    quote: quoteVariable,
     isLike: false,
     likes: counter,
     isEdit: false,
   });
   renderComments();
+  quoteVariable = "";
+  editText.replaceWith(textEl);
 
   nameEl.value = "";
   textEl.value = "";
@@ -149,7 +186,7 @@ buttonEl.addEventListener("click", () => {
 });
 
 nameEl.addEventListener("input", () => {
-  nameEl.value && textEl.value
+  nameEl.value && (textEl.value || editText.value)
     ? buttonEl.removeAttribute("disabled")
     : buttonEl.setAttribute("disabled", "disabled");
 });
