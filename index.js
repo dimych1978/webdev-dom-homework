@@ -17,6 +17,7 @@ const comments = [
     isLike: false,
     likes: 3,
     isEdit: false,
+    editText: "",
   },
   {
     name: "Варвара Н.",
@@ -25,67 +26,42 @@ const comments = [
     isLike: true,
     likes: 75,
     isEdit: false,
+    editText: "",
   },
 ];
 
 const commentsBlock = document.querySelector(".comments");
-const form = document.querySelector(".add-form");
 const nameEl = document.querySelector(".add-form-name");
 const textEl = document.querySelector(".add-form-text");
 const buttonEl = document.querySelector(".add-form-button");
-const commentTextEl = document.createElement("article");
-commentTextEl.className = "comment-text";
-
-const editText = document.createElement("textarea");
-editText.className = "edit-form-text";
-editText.setAttribute("type", "textarea");
-editText.setAttribute("rows", "4");
-
-let quoteVariable;
-const getThisComment = thisComment => {
-  quoteVariable = thisComment;
-};
 
 const answerHandler = () => {
   const commentAnswers = document.querySelectorAll(".comment");
   for (const comment of commentAnswers) {
     comment.addEventListener("click", () => {
       const index = comment.dataset.comment;
-      /*Чтобы отобразился комментируемый текс в дополнение к цитате после первого бэктика добавить строку:
-      >>${comments[index].text}\n \n
-      */
-      const textAnswer = `${comments[index].name}, `;
-      textEl.replaceWith(editText);
-      editText.value = textAnswer;
-      getThisComment(
-        `<span>${comments[index].name}</span> <br/> <span/>${comments[index].text}</span >`
-      );
+      textEl.value = `QUOTE_BEGIN >>${comments[index].name}\n \n ${comments[index].text} \n QUOTE_END `;
     });
   }
 };
+
 const editHandler = () => {
-  const editComments = document.querySelectorAll(".comment-text");
   const edits = document.querySelectorAll(".edit-button");
-  for (const edit of edits) {
-    const index = edit.dataset.index;
-    edit.addEventListener("click", e => {
+  for (const editBtn of edits) {
+    const index = editBtn.dataset.index;
+    editBtn.addEventListener("click", e => {
       e.stopPropagation();
-      commentTextEl.append(editText);
-      // При выборе  комментария для ответа, но без отправки при нажатии на кнопку редактирования существующего комментария пропадает поле для ввода ответа. Эта строка и две ее копии в условиях ниже являются костылем для корректной работы приложения
-      nameEl.insertAdjacentElement("afterend", textEl);
-      editText.addEventListener("click", e => e.stopPropagation());
-      if (!comments[index].isEdit) {
-        nameEl.insertAdjacentElement("afterend", textEl);
-        edit.textContent = "Сохранить";
-        editComments[index].parentElement.appendChild(editText);
-        editText.value = editComments[index].textContent;
-      } else {
-        nameEl.insertAdjacentElement("afterend", textEl);
-        edit.textContent = "Редактировать комментарий";
-        editComments[index].textContent = editText.value;
-        comments[index].text = editText.value;
-      }
+      if (comments[index].editText)
+        comments[index].text = comments[index].editText;
       comments[index].isEdit = !comments[index].isEdit;
+      renderComments();
+      const editText = document.querySelector(".edit-form-text");
+      if (editText) {
+        editText.value = comments[index].text;
+        editText.addEventListener("change", e => {
+          comments[index].editText = e.target.value;
+        });
+      }
     });
   }
 };
@@ -126,12 +102,11 @@ const renderComments = () => {
             <time>${comment.date}</time>
           </header>
           <section class="comment-body" data-index=${index}>
-            <blockquote class='quote'>${
-              comment.quote ? comment.quote : ""
-            }</blockquote>
-            <article class="comment-text">
+            <${!comment.isEdit ? "article" : "textarea"} class="${
+        !comment.isEdit ? "comment-text" : "edit-form-text"
+      }">
               ${comment.text}
-            </article>
+            <${!comment.isEdit ? "/article" : "/textarea"}>
           </section>
           <section class="comment-footer">
             <article class="likes">
@@ -140,7 +115,9 @@ const renderComments = () => {
                 comment.isLike ? "-active-like" : ""
               }' data-index=${index}></button>
             </article>
-            <button class='edit-button' data-index=${index}>Редактировать комментарий</button>
+            <button class='edit-button' data-index=${index}>${
+        !comment.isEdit ? "Редактировать комментарий" : "Сохранить"
+      }</button>
             <button class='delete-button' data-index=${index}>Удалить комментарий</button>
           </section>
         </li>`;
@@ -157,27 +134,29 @@ renderComments();
 const titleEl = document.createElement("h3");
 const dateEl = document.createElement("time");
 
+const sanitize = text => {
+  return text
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll("QUOTE_BEGIN", "<blockquote class='quote'>")
+    .replaceAll("QUOTE_END", "</blockquote>");
+};
+
 function addComment() {
   titleEl.textContent = nameEl.value;
   dateEl.textContent = date();
-  commentTextEl.textContent = textEl.value || editText.value;
   comments.push({
-    name: titleEl.textContent.replaceAll("<", "&lt;").replaceAll(">", "&gt;"),
+    name: sanitize(titleEl.textContent),
     date: date(),
-    text: commentTextEl.textContent
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;"),
-    quote: quoteVariable,
+    text: sanitize(textEl.value),
+    quote: sanitize(textEl.textContent),
     isLike: false,
     likes: counter,
     isEdit: false,
   });
-  renderComments();
-  quoteVariable = "";
-  editText.replaceWith(textEl);
-
   nameEl.value = "";
   textEl.value = "";
+  renderComments();
 }
 
 buttonEl.addEventListener("click", () => {
