@@ -17,7 +17,6 @@ const comments = [
     isLike: false,
     likes: 3,
     isEdit: false,
-    editText: "",
   },
   {
     name: "Варвара Н.",
@@ -26,7 +25,6 @@ const comments = [
     isLike: true,
     likes: 75,
     isEdit: false,
-    editText: "",
   },
 ];
 
@@ -51,17 +49,12 @@ const editHandler = () => {
     const index = editBtn.dataset.index;
     editBtn.addEventListener("click", e => {
       e.stopPropagation();
-      if (comments[index].editText)
-        comments[index].text = comments[index].editText;
+      if (comments[index].isEdit) {
+        const editTextarea = document.querySelector(".edit-form-text");
+        comments[index].text = editTextarea.value;
+      }
       comments[index].isEdit = !comments[index].isEdit;
       renderComments();
-      const editText = document.querySelector(".edit-form-text");
-      if (editText) {
-        editText.value = comments[index].text;
-        editText.addEventListener("change", e => {
-          comments[index].editText = e.target.value;
-        });
-      }
     });
   }
 };
