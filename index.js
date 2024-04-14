@@ -1,4 +1,6 @@
 let counter = 0;
+let isLoading = false;
+
 const date = () =>
   `${new Date().toLocaleDateString("ru-RU", {
     day: "2-digit",
@@ -9,36 +11,30 @@ const date = () =>
     minute: "2-digit",
   })}`;
 
-const comments = [
-  {
-    name: "Глеб Фокин",
-    date: "12.02.22 12:18",
-    text: "Это будет первый комментарий на этой странице",
-    isLike: false,
-    likes: 3,
-    isEdit: false,
-  },
-  {
-    name: "Варвара Н.",
-    date: "13.02.22 19:22",
-    text: "Мне нравится как оформлена эта страница! ❤",
-    isLike: true,
-    likes: 75,
-    isEdit: false,
-  },
-];
+let comments = [];
 
 const commentsBlock = document.querySelector(".comments");
+const formEl = document.querySelector(".add-form");
 const nameEl = document.querySelector(".add-form-name");
 const textEl = document.querySelector(".add-form-text");
+const addFormRowEl = document.querySelector(".add-form-row");
 const buttonEl = document.querySelector(".add-form-button");
+
+fetch("https://wedev-api.sky.pro/api/v1/dmitrii-bashkatov/comments", {
+  method: "GET",
+})
+  .then(response => response.json())
+  .then(data => {
+    comments = [...data.comments];
+    renderComments();
+  });
 
 const answerHandler = () => {
   const commentAnswers = document.querySelectorAll(".comment");
   for (const comment of commentAnswers) {
     comment.addEventListener("click", () => {
       const index = comment.dataset.comment;
-      textEl.value = `QUOTE_BEGIN >>${comments[index].name}\n \n ${comments[index].text} \n QUOTE_END `;
+      textEl.value = `QUOTE_BEGIN >>${comments[index].author.name}\n \n ${comments[index].text} \n QUOTE_END `;
     });
   }
 };
@@ -86,12 +82,13 @@ const deleteHandler = () => {
   }
 };
 
+
 const renderComments = () => {
   const innerComments = comments
     .map((comment, index) => {
       return `<li class="comment" data-comment = ${index}>
           <header class="comment-header">
-            <h3>${comment.name}</h3>
+            <h3>${comment.author.name}</h3>
             <time>${comment.date}</time>
           </header>
           <section class="comment-body" data-index=${index}>
@@ -116,13 +113,23 @@ const renderComments = () => {
         </li>`;
     })
     .join("");
+
   commentsBlock.innerHTML = innerComments;
   deleteHandler();
   likesHandler();
   editHandler();
   answerHandler();
 };
-renderComments();
+
+const renderLoad = () => {
+  !isLoading
+    ? (formEl.innerHTML = `<article class="cssload-container"><figure class="cssload-whirlpool"></figure>...Комментарий загружается</article>`)
+    : (formEl.querySelector(".cssload-container").remove(),
+      formEl.appendChild(nameEl),
+      formEl.appendChild(textEl),
+      addFormRowEl.appendChild(buttonEl),
+      formEl.appendChild(addFormRowEl));
+}
 
 const titleEl = document.createElement("h3");
 const dateEl = document.createElement("time");
@@ -136,20 +143,29 @@ const sanitize = text => {
 };
 
 function addComment() {
-  titleEl.textContent = nameEl.value;
-  dateEl.textContent = date();
-  comments.push({
-    name: sanitize(titleEl.textContent),
-    date: date(),
-    text: sanitize(textEl.value),
-    quote: sanitize(textEl.textContent),
-    isLike: false,
-    likes: counter,
-    isEdit: false,
-  });
+  renderLoad();
+  fetch("https://wedev-api.sky.pro/api/v1/dmitrii-bashkatov/comments", {
+    method: "POST",
+    body: JSON.stringify({
+      name: sanitize(nameEl.value),
+      date: date(),
+      text: sanitize(textEl.value),
+    }),
+  }).then(
+    fetch("https://wedev-api.sky.pro/api/v1/dmitrii-bashkatov/comments", {
+      method: "GET",
+    })
+      .then(response => response.json())
+      .then(data => {
+        comments = [...data.comments];
+        isLoading = true;
+        renderLoad();
+        renderComments();
+        isLoading = false;
+      })
+  );
   nameEl.value = "";
   textEl.value = "";
-  renderComments();
 }
 
 buttonEl.addEventListener("click", () => {
@@ -158,7 +174,7 @@ buttonEl.addEventListener("click", () => {
 });
 
 nameEl.addEventListener("input", () => {
-  nameEl.value && (textEl.value || editText.value)
+  nameEl.value && textEl.value
     ? buttonEl.removeAttribute("disabled")
     : buttonEl.setAttribute("disabled", "disabled");
 });
