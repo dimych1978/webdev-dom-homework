@@ -89,7 +89,7 @@ const renderComments = () => {
       return `<li class="comment" data-comment = ${index}>
           <header class="comment-header">
             <h3>${comment.author.name}</h3>
-            <time>${comment.date}</time>
+            <time>${date(comment.date)}</time>
           </header>
           <section class="comment-body" data-index=${index}>
             <${!comment.isEdit ? "article" : "textarea"} class="${
@@ -148,7 +148,7 @@ function addComment() {
     method: "POST",
     body: JSON.stringify({
       name: sanitize(nameEl.value),
-      date: date(),
+      date: new Date(),
       text: sanitize(textEl.value),
     }),
   }).then(
