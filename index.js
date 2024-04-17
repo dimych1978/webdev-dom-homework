@@ -171,14 +171,14 @@ function addComment() {
       date: new Date(),
       text: sanitize(textEl.value),
     }),
-  }).then(() =>
-    getData().then(() => {
+  })
+    .then(() => getData())
+    .then(() => {
       isLoading = false;
       renderLoad();
       nameEl.value = "";
       textEl.value = "";
-    })
-  );
+    });
 }
 
 buttonEl.addEventListener("click", () => {
