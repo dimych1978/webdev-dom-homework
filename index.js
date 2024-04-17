@@ -141,7 +141,7 @@ const renderComments = () => {
 };
 
 const renderLoad = () => {
-  !isLoading
+  isLoading
     ? (formEl.innerHTML = `<article class="cssload-container"><figure class="cssload-whirlpool"></figure>...Комментарий загружается</article>`)
     : (formEl.querySelector(".cssload-container").remove(),
       formEl.appendChild(nameEl),
@@ -162,6 +162,7 @@ const sanitize = text => {
 };
 
 function addComment() {
+  isLoading = true;
   renderLoad();
   fetch("https://wedev-api.sky.pro/api/v1/dmitrii-bashkatov/comments", {
     method: "POST",
