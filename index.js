@@ -170,16 +170,13 @@ function addComment() {
       date: new Date(),
       text: sanitize(textEl.value),
     }),
-  })
-    .then(() => getData())
-    .then(() => {
-      isLoading = true;
-      renderLoad();
-      renderComments();
+  }).then(() =>
+    getData().then(() => {
       isLoading = false;
-    });
-  nameEl.value = "";
-  textEl.value = "";
+      nameEl.value = "";
+      textEl.value = "";
+    })
+  );
 }
 
 buttonEl.addEventListener("click", () => {
