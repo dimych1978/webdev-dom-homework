@@ -173,6 +173,7 @@ function addComment() {
   }).then(() =>
     getData().then(() => {
       isLoading = false;
+      renderLoad();
       nameEl.value = "";
       textEl.value = "";
     })
