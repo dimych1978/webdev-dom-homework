@@ -24,13 +24,29 @@ const getData = () => {
   !comments.length &&
     (commentsBlock.innerHTML = `<article class="cssload-container cssload-container-first"><figure class="cssload-whirlpool" ></figure>...Комментарии загружаются</article>`);
 
-  return fetch("https://wedev-api.sky.pro/api/v1/dmitrii-bashkatov/comments", {
+  return fetch("https://wedev-api.sky.pro/api/v1/dmitrii-bashkatov1/comments", {
     method: "GET",
   })
-    .then(response => response.json())
+    .then(response => {
+      try {
+        if (!response.ok) {
+          throw new Error("Сервер не может вернуть данные");
+        } else {
+          return response.json();
+        }
+      } catch (error) {
+        console.warn(error);
+      }
+    })
     .then(data => {
       comments = [...data.comments];
       renderComments();
+    })
+    .catch(error => {
+      if (error.message === "Filed to fetch") {
+        console.warn("Сервер упал");
+        getData();
+      }
     });
 };
 getData();
@@ -141,9 +157,10 @@ const renderComments = () => {
 };
 
 const renderLoad = () => {
+  const cssLoad = formEl.querySelector(".cssload-container");
   isLoading
     ? (formEl.innerHTML = `<article class="cssload-container"><figure class="cssload-whirlpool"></figure>...Комментарий загружается</article>`)
-    : (formEl.querySelector(".cssload-container").remove(),
+    : (cssLoad && cssLoad.remove(),
       formEl.appendChild(nameEl),
       formEl.appendChild(textEl),
       addFormRowEl.appendChild(buttonEl),
@@ -164,21 +181,53 @@ const sanitize = text => {
 function addComment() {
   isLoading = true;
   renderLoad();
-  fetch("https://wedev-api.sky.pro/api/v1/dmitrii-bashkatov/comments", {
-    method: "POST",
-    body: JSON.stringify({
-      name: sanitize(nameEl.value),
-      date: new Date(),
-      text: sanitize(textEl.value),
-    }),
-  })
-    .then(() => getData())
-    .then(() => {
-      isLoading = false;
-      renderLoad();
-      nameEl.value = "";
-      textEl.value = "";
-    });
+  const postData = () => {
+    fetch("https://wedev-api.sky.pro/api/v1/dmitrii-bashkatov1/comments", {
+      method: "POST",
+      body: JSON.stringify({
+        name: sanitize(nameEl.value),
+        forceError: true,
+        text: sanitize(textEl.value),
+      }),
+    })
+      .then(response => {
+        if (response.status === 400) {
+          throw new Error("В поле ввода должно быть не меньше 3х символов");
+        } else if (response.status === 500) {
+          throw new Error(
+            "Нет интернета, пробую отправить запрос повторно. Если это сообщение появляется слишком часто, попробуйте повторить попытку позже."
+          );
+        } else {
+          return response.json();
+        }
+      })
+      .then(() => getData())
+      .then(() => {
+        isLoading = false;
+        renderLoad();
+        nameEl.value = "";
+        textEl.value = "";
+      })
+      .catch(error => {
+        console.error('Ошибка', error.message);
+        isLoading = false;
+        renderLoad();
+        if (error.message === "В поле ввода должно быть не меньше 3х символов")
+          alert(error.message);
+        if (
+          error.message ===
+          "Нет интернета, пробую отправить запрос повторно. Если это сообщение появляется слишком часто, попробуйте повторить попытку позже."
+        ) {
+          console.warn(error.message);
+          postData();
+        }
+        if (error.message === "Failed to fetch") {
+          alert("Проверьте соединение с интернетом");
+          return;
+        }
+      });
+  };
+  postData();
 }
 
 buttonEl.addEventListener("click", () => {
