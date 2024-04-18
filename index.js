@@ -43,7 +43,7 @@ const getData = () => {
       renderComments();
     })
     .catch(error => {
-      if (error.message === "Filed to fetch") {
+      if (error.message.includes("Filed to fetch")) {
         console.warn("Сервер упал");
         getData();
       }
@@ -182,7 +182,7 @@ function addComment() {
   isLoading = true;
   renderLoad();
   const postData = () => {
-    fetch("https://wedev-api.sky.pro/api/v1/dmitrii-bashkatov1/comments", {
+    fetch("https://wedev-api.sky.pro/api/v1/dmitrii-bashkatov/comments", {
       method: "POST",
       body: JSON.stringify({
         name: sanitize(nameEl.value),
