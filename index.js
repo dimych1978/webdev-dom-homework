@@ -1,12 +1,12 @@
 let counter = 0;
 let isLoading = false;
 
-const date = () =>
-  `${new Date().toLocaleDateString("ru-RU", {
+const getDate = date =>
+  `${new Date(date).toLocaleDateString("ru-RU", {
     day: "2-digit",
     month: "2-digit",
     year: "2-digit",
-  })} ${new Date().toLocaleTimeString("ru-RU", {
+  })} ${new Date(date).toLocaleTimeString("ru-RU", {
     hour: "2-digit",
     minute: "2-digit",
   })}`;
@@ -20,14 +20,20 @@ const textEl = document.querySelector(".add-form-text");
 const addFormRowEl = document.querySelector(".add-form-row");
 const buttonEl = document.querySelector(".add-form-button");
 
-fetch("https://wedev-api.sky.pro/api/v1/dmitrii-bashkatov/comments", {
-  method: "GET",
-})
-  .then(response => response.json())
-  .then(data => {
-    comments = [...data.comments];
-    renderComments();
-  });
+const getData = () => {
+  !comments.length &&
+    (commentsBlock.innerHTML = `<article class="cssload-container cssload-container-first"><figure class="cssload-whirlpool" ></figure>...Комментарии загружаются</article>`);
+
+  return fetch("https://wedev-api.sky.pro/api/v1/dmitrii-bashkatov/comments", {
+    method: "GET",
+  })
+    .then(response => response.json())
+    .then(data => {
+      comments = [...data.comments];
+      renderComments();
+    });
+};
+getData();
 
 const answerHandler = () => {
   const commentAnswers = document.querySelectorAll(".comment");
@@ -55,17 +61,31 @@ const editHandler = () => {
   }
 };
 
+function delay(interval = 300, likeAnimation) {
+  return new Promise(resolve => {
+    likeAnimation.setAttribute(
+      "style",
+      "animation: rotating 2s linear infinite"
+    );
+    setTimeout(() => {
+      resolve();
+    }, interval);
+  });
+}
+
 const likesHandler = () => {
   const likesButtons = document.querySelectorAll(".like-button");
   for (const likeButton of likesButtons) {
     likeButton.addEventListener("click", e => {
       e.stopPropagation();
-      const index = likeButton.dataset.index;
-      comments[index].isLike = !comments[index].isLike;
-      comments[index].isLike
-        ? ++comments[index].likes
-        : --comments[index].likes;
-      renderComments();
+      delay(2000, likeButton).then(() => {
+        const index = likeButton.dataset.index;
+        comments[index].isLike = !comments[index].isLike;
+        comments[index].isLike
+          ? ++comments[index].likes
+          : --comments[index].likes;
+        renderComments();
+      });
     });
   }
 };
@@ -82,14 +102,13 @@ const deleteHandler = () => {
   }
 };
 
-
 const renderComments = () => {
   const innerComments = comments
     .map((comment, index) => {
       return `<li class="comment" data-comment = ${index}>
           <header class="comment-header">
             <h3>${comment.author.name}</h3>
-            <time>${date(comment.date)}</time>
+            <time>${getDate(comment.date)}</time>
           </header>
           <section class="comment-body" data-index=${index}>
             <${!comment.isEdit ? "article" : "textarea"} class="${
@@ -122,14 +141,14 @@ const renderComments = () => {
 };
 
 const renderLoad = () => {
-  !isLoading
+  isLoading
     ? (formEl.innerHTML = `<article class="cssload-container"><figure class="cssload-whirlpool"></figure>...Комментарий загружается</article>`)
     : (formEl.querySelector(".cssload-container").remove(),
       formEl.appendChild(nameEl),
       formEl.appendChild(textEl),
       addFormRowEl.appendChild(buttonEl),
       formEl.appendChild(addFormRowEl));
-}
+};
 
 const titleEl = document.createElement("h3");
 const dateEl = document.createElement("time");
@@ -143,6 +162,7 @@ const sanitize = text => {
 };
 
 function addComment() {
+  isLoading = true;
   renderLoad();
   fetch("https://wedev-api.sky.pro/api/v1/dmitrii-bashkatov/comments", {
     method: "POST",
@@ -151,21 +171,14 @@ function addComment() {
       date: new Date(),
       text: sanitize(textEl.value),
     }),
-  }).then(
-    fetch("https://wedev-api.sky.pro/api/v1/dmitrii-bashkatov/comments", {
-      method: "GET",
-    })
-      .then(response => response.json())
-      .then(data => {
-        comments = [...data.comments];
-        isLoading = true;
-        renderLoad();
-        renderComments();
-        isLoading = false;
-      })
-  );
-  nameEl.value = "";
-  textEl.value = "";
+  })
+    .then(() => getData())
+    .then(() => {
+      isLoading = false;
+      renderLoad();
+      nameEl.value = "";
+      textEl.value = "";
+    });
 }
 
 buttonEl.addEventListener("click", () => {
@@ -188,11 +201,11 @@ const events = ["input", "keyup"];
 events.forEach(event =>
   textEl.addEventListener(event, e => {
     textEl.value && nameEl.value
-      ? buttonEl.removeAttribute("disabled")
-      : buttonEl.setAttribute("disabled", "disabled");
-    if (e.key === "Enter" && !buttonEl.hasAttribute("disabled")) {
+      ? (buttonEl.disabled = false)
+      : (buttonEl.disabled = true);
+    if (e.key === "Enter" && !buttonEl.disabled) {
       addComment();
-      buttonEl.setAttribute("disabled", "disabled");
+      buttonEl.disabled = true;
     }
   })
 );
