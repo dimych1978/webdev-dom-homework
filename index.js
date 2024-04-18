@@ -43,7 +43,7 @@ const getData = () => {
       renderComments();
     })
     .catch(error => {
-      if (error.message.includes("Filed to fetch")) {
+      if (error.message.includes("Failed to fetch")) {
         console.warn("Сервер упал");
         getData();
       }
