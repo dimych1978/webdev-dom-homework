@@ -1,5 +1,4 @@
 import { getFetch, postFetch } from "./api.js";
-import getDate from "./getDate.js";
 import { renderLoad, renderComments } from "./render.js";
 
 let isLoading = false;
