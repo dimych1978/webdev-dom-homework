@@ -1,6 +1,3 @@
-import { nameEl, textEl } from "./main.js";
-import sanitize from "./sanitize.js";
-
 export const getFetch = () => {
   return fetch("https://wedev-api.sky.pro/api/v1/dmitrii-bashkatov/comments", {
     method: "GET",
@@ -13,13 +10,13 @@ export const getFetch = () => {
   });
 }
 
-export const postFetch = () => {
+export const postFetch = (nameEl, textEl) => {
   return fetch("https://wedev-api.sky.pro/api/v1/dmitrii-bashkatov/comments", {
     method: "POST",
     body: JSON.stringify({
-      name: sanitize(nameEl.value),
+      name: nameEl,
       forceError: true,
-      text: sanitize(textEl.value),
+      text: textEl,
     }),
   }).then(response => {
     if (response.status === 400) {

@@ -1,17 +1,11 @@
-import { textEl } from "./main.js";
+import { addComment } from "./addComment.js";
+import { delay } from "./delay.js";
 import { renderComments } from "./render.js";
 
-function delay(interval = 300, likeAnimation) {
-  return new Promise(resolve => {
-    likeAnimation.setAttribute(
-      "style",
-      "animation: rotating 2s linear infinite"
-    );
-    setTimeout(() => {
-      resolve();
-    }, interval);
-  });
-}
+ export const nameEl = document.querySelector(".add-form-name");
+ export const textEl = document.querySelector(".add-form-text");
+ export const buttonEl = document.querySelector(".add-form-button");
+
 
 export const answerHandler = comments => {
   const commentAnswers = document.querySelectorAll(".comment");
@@ -67,3 +61,32 @@ export const editHandler = comments => {
     });
   }
 };
+
+buttonEl.addEventListener("click", () => {
+  addComment();
+  buttonEl.setAttribute("disabled", "disabled");
+});
+
+nameEl.addEventListener("input", () => {
+  nameEl.value && textEl.value
+    ? buttonEl.removeAttribute("disabled")
+    : buttonEl.setAttribute("disabled", "disabled");
+});
+
+textEl.addEventListener("keydown", e => {
+  if (e.key === "Enter") e.preventDefault();
+});
+
+const events = ["input", "keyup"];
+
+events.forEach(event =>
+  textEl.addEventListener(event, e => {
+    textEl.value && nameEl.value
+      ? (buttonEl.disabled = false)
+      : (buttonEl.disabled = true);
+    if (e.key === "Enter" && !buttonEl.disabled) {
+      addComment();
+      buttonEl.disabled = true;
+    }
+  })
+);

@@ -1,4 +1,5 @@
-import { nameEl, textEl, buttonEl, commentsBlock } from "./main.js";
+import { nameEl, textEl, buttonEl } from "./handlers.js";
+import { commentsBlock } from "./main.js";
 import getDate from "./getDate.js";
 import {
   answerHandler,
