@@ -10,7 +10,7 @@ export const addComment = () => {
   isLoading = true;
   renderLoad(isLoading);
   const postData = () => {
-    postFetch(sanitize(nameEl), sanitize(textEl))
+    postFetch(sanitize(nameEl.value), sanitize(textEl.value))
       .then(() => getData())
       .then(() => {
         isLoading = false;
