@@ -130,8 +130,8 @@ body {
   margin-bottom: 12px;
 }
 
-.add-form-name:read-only{
-  background-color: #9e9e9e;
+.add-form-name:read-only {
+  background-color: #d2ddd2;
   color: #363636;
   font-weight: bold;
 }
@@ -182,12 +182,23 @@ body {
   padding-top: 22px;
   color: white;
   cursor: pointer;
-  border-bottom: inherit ;
+  border-bottom: inherit;
+}
+
+.add-form-button-exit {
+  width: 50px;
+  margin-left: auto;
+  font-size: 12px;
+  background-color: #acb78b;
+  border: none;
+  border-radius: 18px;
+  cursor: pointer;
 }
 
 .add-form-button:hover,
 .add-form-button-main:hover,
 .add-form-button-link:hover,
+.add-form-button-exit,
 .delete-button:hover,
 .edit-button:hover {
   opacity: 0.9;

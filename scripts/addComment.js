@@ -11,6 +11,7 @@ export let textComment;
 export const addCommentRender = () => {
   const addCommentHTML = `
   <section class="add-form">
+        <button class="add-form-button-exit">Выйти</button>
         <input
           type="text"
           class="add-form-name"
@@ -37,9 +38,16 @@ export const addCommentRender = () => {
   const nameEl = document.querySelector(".add-form-name");
   const textEl = document.querySelector(".add-form-text");
   const buttonEl = document.querySelector(".add-form-button");
+  const exitEl = document.querySelector(".add-form-button-exit");
   const entryEl = document.querySelector(".entry");
 
   entryEl && entryEl.addEventListener("click", () => loginRender());
+
+  exitEl &&
+    exitEl.addEventListener("click", () => {
+      (userData.name = null), (userData.token = null);
+      getData();
+    });
 
   if (textComment) textEl.value = textComment;
   buttonEl &&

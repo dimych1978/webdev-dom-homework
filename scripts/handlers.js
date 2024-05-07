@@ -29,19 +29,20 @@ export const deleteHandler = comments => {
 
 export const likesHandler = comments => {
   const likesButtons = document.querySelectorAll(".like-button");
-  for (const likeButton of likesButtons) {
-    likeButton.addEventListener("click", e => {
-      e.stopPropagation();
-      delay(2000, likeButton).then(() => {
-        const index = likeButton.dataset.index;
-        comments[index].isLike = !comments[index].isLike;
-        comments[index].isLike
-          ? ++comments[index].likes
-          : --comments[index].likes;
-        renderComments(comments);
+  if (userData.token)
+    for (const likeButton of likesButtons) {
+      likeButton.addEventListener("click", e => {
+        e.stopPropagation();
+        delay(2000, likeButton).then(() => {
+          const index = likeButton.dataset.index;
+          comments[index].isLike = !comments[index].isLike;
+          comments[index].isLike
+            ? ++comments[index].likes
+            : --comments[index].likes;
+          renderComments(comments);
+        });
       });
-    });
-  }
+    }
 };
 
 export const editHandler = comments => {
