@@ -11,8 +11,6 @@ let comments = [];
 export const commentsBlock = document.querySelector(".comments");
 export const userAction = document.querySelector(".user-action");
 
-// loginRender()
-
 export const getData = () => {
   !comments.length &&
     (commentsBlock.innerHTML = `<article class="cssload-container cssload-container-first"><figure class="cssload-whirlpool" ></figure>...Комментарии загружаются</article>`);
