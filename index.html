@@ -7,32 +7,16 @@
   </head>
 
   <body>
-    <main class="container">
-      <ul class="comments">
-      </ul> 
-      <section class="add-form">
-        <input
-          type="text"
-          class="add-form-name"
-          placeholder="Введите ваше имя"
-          required
-        />
-        <textarea
-          type="textarea"
-          class="add-form-text"
-          placeholder="Введите ваш комментарий"
-          rows="4"
-        ></textarea>
-        <fieldset class="add-form-row">
-          <button class="add-form-button" type="submit" disabled="disabled">
-            Написать
-          </button>
-      </fieldset>
-      </section>
-    </main>
+    <div id="app">
+      <main class="container">
+        <ul class="comments"></ul>
+        <section class="user-action">
+        </section>
+      </main>
+    </div>
   </body>
 
-  <script type="module" src="./main.js">
+  <script type="module" src="./scripts/main.js">
     "use strict";
   </script>
 </html>

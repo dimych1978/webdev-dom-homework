@@ -1,4 +1,3 @@
-import { nameEl, textEl, buttonEl } from "./handlers.js";
 import { commentsBlock } from "./main.js";
 import getDate from "./getDate.js";
 import {
@@ -7,20 +6,15 @@ import {
   editHandler,
   likesHandler,
 } from "./handlers.js";
-
-const formEl = document.querySelector(".add-form");
-const addFormRowEl = document.querySelector(".add-form-row");
+import { addCommentRender } from "./addComment.js";
 
 export const renderLoad = isLoading => {
+  const formEl = document.querySelector(".add-form");
   const cssLoad = formEl.querySelector(".cssload-container");
 
   isLoading
     ? (formEl.innerHTML = `<article class="cssload-container"><figure class="cssload-whirlpool"></figure>...Комментарий загружается</article>`)
-    : (cssLoad && cssLoad.remove(),
-      formEl.appendChild(nameEl),
-      formEl.appendChild(textEl),
-      addFormRowEl.appendChild(buttonEl),
-      formEl.appendChild(addFormRowEl));
+    : (cssLoad && cssLoad.remove(), addCommentRender());
 };
 
 export const renderComments = comments => {
@@ -34,18 +28,14 @@ export const renderComments = comments => {
           <section class="comment-body" data-index=${index}>
             <${!comment.isEdit ? "article" : "textarea"} class="${
         !comment.isEdit ? "comment-text" : "edit-form-text"
-      }">
-              ${comment.text}
-            <${!comment.isEdit ? "/article" : "/textarea"}>
-          </section>
-          <section class="comment-footer">
-            <article class="likes">
-              <span class="likes-counter">${comment.likes}</span>
-              <button class='like-button ${
-                comment.isLike ? "-active-like" : ""
-              }' data-index=${index}></button>
-            </article>
-            <button class='edit-button' data-index=${index}>${
+      }">${comment.text}<${
+        !comment.isEdit ? "/article" : "/textarea"
+      }></section><section class="comment-footer">
+            <article class="likes"><span class="likes-counter">${
+              comment.likes
+            }</span><button class='like-button ${
+        comment.isLike ? "-active-like" : ""
+      }' data-index=${index}></button></article><button class='edit-button' data-index=${index}>${
         !comment.isEdit ? "Редактировать комментарий" : "Сохранить"
       }</button>
             <button class='delete-button' data-index=${index}>Удалить комментарий</button>
@@ -55,6 +45,7 @@ export const renderComments = comments => {
     .join("");
 
   commentsBlock.innerHTML = innerComments;
+  addCommentRender();
   deleteHandler(comments);
   likesHandler(comments);
   editHandler(comments);
