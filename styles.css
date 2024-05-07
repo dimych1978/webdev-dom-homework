@@ -127,6 +127,13 @@ body {
 .add-form-name {
   width: 300px;
   padding: 11px 22px;
+  margin-bottom: 12px;
+}
+
+.add-form-name:read-only{
+  background-color: #9e9e9e;
+  color: #363636;
+  font-weight: bold;
 }
 
 .add-form-text {
@@ -141,6 +148,14 @@ body {
   border: none;
 }
 
+.add-form-registry {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  border: none;
+  padding-left: 0;
+}
+
 .add-form-button {
   margin-top: 24px;
   font-size: 24px;
@@ -151,7 +166,28 @@ body {
   cursor: pointer;
 }
 
+.add-form-button-main {
+  width: 100%;
+  margin-top: 24px;
+  font-size: 24px;
+  padding: 10px 20px;
+  background-color: #bcec30;
+  border: none;
+  border-radius: 18px;
+  cursor: pointer;
+}
+
+.add-form-button-link {
+  text-align: center;
+  padding-top: 22px;
+  color: white;
+  cursor: pointer;
+  border-bottom: inherit ;
+}
+
 .add-form-button:hover,
+.add-form-button-main:hover,
+.add-form-button-link:hover,
 .delete-button:hover,
 .edit-button:hover {
   opacity: 0.9;
