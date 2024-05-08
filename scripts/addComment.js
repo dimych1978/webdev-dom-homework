@@ -11,13 +11,13 @@ export let textComment;
 export const addCommentRender = () => {
   const addCommentHTML = `
   <section class="add-form">
-        <button class="add-form-button-exit">Выйти</button>
+        <figure class="add-form-name_with-exit" title="exit">
         <input
           type="text"
           class="add-form-name"
           placeholder="Введите ваше имя"
           required
-        />
+        /><img src="../img/exit.svg"/></figure>
         <textarea
           type="textarea"
           class="add-form-text"
