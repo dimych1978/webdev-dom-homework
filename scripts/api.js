@@ -1,9 +1,8 @@
-import { addCommentRender } from "./addComment.js";
 import { userData } from "./main.js";
 
-const baseURL = "https://wedev-api.sky.pro/api/v2/dmitrii-bashkatov/comments";
+const baseURL = "https://wedev-api.sky.pro/api/v2/dmitrii-bashkatov1/comments";
 
-const userURL = "https://wedev-api.sky.pro/api/user";
+export const userURL = "https://wedev-api.sky.pro/api/user";
 
 export const validToken = newToken => {
   token = newToken;
@@ -12,12 +11,10 @@ export const validToken = newToken => {
 export const getFetch = () => {
   return fetch(baseURL, {
     method: "GET",
+    headers: { Authorization: `Bearer ${userData.token}` },
   }).then(response => {
-    if (!response.ok) {
-      throw new Error("Сервер не может вернуть данные");
-    } else {
-      return response.json();
-    }
+    if (!response.ok) throw new Error("Сервер не может вернуть данные");
+    return response.json();
   });
 };
 
@@ -30,22 +27,32 @@ export const postFetch = text => {
     body: JSON.stringify({
       text: text,
     }),
-  })
-    .then(response => {
-      if (response.status === 400) {
-        throw new Error("В поле ввода должно быть не меньше 3х символов");
-      } else if (response.status === 500) {
-        throw new Error(
-          "Нет интернета, пробую отправить запрос повторно. Если это сообщение появляется слишком часто, попробуйте повторить попытку позже."
-        );
-      } else {
-        return response.json();
-      }
-    })
-    .catch(error => {
-      console.warn(error.message);
-      addCommentRender();
-    });
+  }).then(response => {
+    if (response.status == 500) {
+      throw new Error(
+        "Нет интернета, пробую отправить запрос повторно. Если это сообщение появляется слишком часто, попробуйте повторить попытку позже."
+      );
+    }
+    return response.json();
+  });
+};
+
+export const deleteComment = id => {
+  return fetch(baseURL + `/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${userData.token}`,
+    },
+  });
+};
+
+export const likeChangeComment = id => {
+  return fetch(baseURL + `/${id}` + "/toggle-like", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${userData.token}`,
+    },
+  });
 };
 
 export const addNewUser = (name, login, password) => {

@@ -6,7 +6,7 @@ export const userData = {
   token: localStorage.getItem("userToken") || null,
 };
 
-let comments = [];
+export let comments = [];
 
 export const commentsBlock = document.querySelector(".comments");
 export const userAction = document.querySelector(".user-action");

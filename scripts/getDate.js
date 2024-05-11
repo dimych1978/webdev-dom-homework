@@ -1,3 +1,5 @@
+// Мой формат даты, export default
+
 export default date =>
   `${new Date(date).toLocaleDateString("ru-RU", {
     day: "2-digit",

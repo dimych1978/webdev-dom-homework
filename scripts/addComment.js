@@ -11,16 +11,18 @@ export let textComment;
 export const addCommentRender = () => {
   const addCommentHTML = `
   <section class="add-form">
-        <figure class="add-form-name_with-exit" title="exit">
+        <figure class="add-form-name-with-exit" title="exit">
         <input
           type="text"
           class="add-form-name"
+          name="author"
           placeholder="Введите ваше имя"
           required
-        /><img src="../img/exit.svg"/></figure>
+        /><img class="exit" src="../img/exit.svg"/></figure>
         <textarea
           type="textarea"
           class="add-form-text"
+          name="body"
           placeholder="Введите ваш комментарий"
           rows="4"
         ></textarea>
@@ -38,7 +40,7 @@ export const addCommentRender = () => {
   const nameEl = document.querySelector(".add-form-name");
   const textEl = document.querySelector(".add-form-text");
   const buttonEl = document.querySelector(".add-form-button");
-  const exitEl = document.querySelector(".add-form-button-exit");
+  const exitEl = document.querySelector(".exit");
   const entryEl = document.querySelector(".entry");
 
   entryEl && entryEl.addEventListener("click", () => loginRender());
@@ -76,7 +78,7 @@ export const addCommentRender = () => {
     events.forEach(event =>
       textEl.addEventListener(event, e => {
         textEl.value ? (buttonEl.disabled = false) : (buttonEl.disabled = true);
-        if (e.key === "Enter" && !buttonEl.disabled) {
+        if (e.key == "Enter" && !buttonEl.disabled) {
           addComment();
           buttonEl.disabled = true;
         }
@@ -89,10 +91,11 @@ export const addComment = text => {
   renderLoad(isLoading);
   const postData = () => {
     postFetch(sanitize(text))
+      .then(data => {
+        if (data.error) throw new Error(data.error);
+      })
       .then(() => getData())
       .then(() => {
-        if (text.length < 3)
-          throw new Error("В поле ввода должно быть не меньше 3х символов");
         isLoading = false;
         renderLoad(isLoading);
         textComment = "";
@@ -100,13 +103,11 @@ export const addComment = text => {
       .catch(error => {
         console.warn("Ошибка", error.message);
         isLoading = false;
-        renderLoad(isLoading);
-        if (
-          error.message === "В поле ввода должно быть не меньше 3х символов"
-        ) {
+        if (error.message === "text должен содержать хотя бы 3 символа") {
           textComment = text;
           alert(error.message);
         }
+        renderLoad(isLoading);
         if (
           error.message ===
           "Нет интернета, пробую отправить запрос повторно. Если это сообщение появляется слишком часто, попробуйте повторить попытку позже."
