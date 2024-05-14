@@ -1,21 +1,21 @@
-import { commentsBlock } from './main.js'
-import { format } from 'date-fns'
+import { commentsBlock } from './main.js';
+import { format } from 'date-fns';
 import {
   answerHandler,
   deleteHandler,
   editHandler,
   likesHandler,
-} from './handlers.js'
-import { addCommentRender } from './addComment.js'
+} from './handlers.js';
+import { addCommentRender } from './addComment.js';
 
 export const renderLoad = (isLoading) => {
-  const formEl = document.querySelector('.add-form')
-  const cssLoad = formEl.querySelector('.cssload-container')
+  const formEl = document.querySelector('.add-form');
+  const cssLoad = formEl.querySelector('.cssload-container');
 
   isLoading
     ? (formEl.innerHTML = `<article class="cssload-container"><figure class="cssload-whirlpool"></figure>...Комментарий загружается</article>`)
-    : (cssLoad && cssLoad.remove(), addCommentRender())
-}
+    : (cssLoad && cssLoad.remove(), addCommentRender());
+};
 
 export const renderComments = (comments) => {
   const innerComments = comments
@@ -44,14 +44,14 @@ export const renderComments = (comments) => {
               comment.id
             }>Удалить комментарий</button>
           </section>
-        </li>`
+        </li>`;
     })
-    .join('')
+    .join('');
 
-  commentsBlock.innerHTML = innerComments
-  addCommentRender()
-  deleteHandler(comments)
-  likesHandler(comments)
-  editHandler(comments)
-  answerHandler(comments)
-}
+  commentsBlock.innerHTML = innerComments;
+  // addCommentRender();
+  deleteHandler(comments);
+  likesHandler(comments);
+  editHandler(comments);
+  answerHandler(comments);
+};

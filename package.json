@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "webpack --mode development --watch",
     "start": "http-server -p 3010",
-    "format": "prettier --write ./*",
-    "lint:js": "eslint ./**/addComment.js",
+    "format": "prettier --write ./**/*",
+    "lint:js": "eslint ./**/*.js",
     "lint:css": "stylelint --fix ./*.css",
     "lint": "npm run lint:js && npm run lint:css",
     "prepare": "husky"

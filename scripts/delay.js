@@ -1,8 +1,8 @@
 export const delay = (interval = 300, likeAnimation) => {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     likeAnimation.setAttribute(
-      "style",
-      "animation: rotating 2s linear infinite"
+      'style',
+      'animation: rotating 2s linear infinite',
     );
     setTimeout(() => {
       resolve();
