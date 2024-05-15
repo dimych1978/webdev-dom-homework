@@ -1,14 +1,17 @@
 @keyframes rotating {
-  from {
+  0% {
     transform: rotate(0deg);
   }
+
   25% {
     transform: rotate(30deg);
   }
+
   75% {
     transform: rotate(-30deg);
   }
-  to {
+
+  100% {
     transform: rotate(0deg);
   }
 }
@@ -24,8 +27,8 @@ img {
 }
 
 .container {
-  font-family: Helvetica;
-  color: #ffffff;
+  font-family: Helvetica, sans-serif;
+  color: #fff;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -48,10 +51,10 @@ img {
   box-sizing: border-box;
   background: radial-gradient(
     75.42% 75.42% at 50% 42.37%,
-    rgba(53, 53, 53, 0) 22.92%,
+    rgb(53 53 53 / 0%) 22.92%,
     #7334ea 100%
   );
-  filter: drop-shadow(0px 20px 67px rgba(0, 0, 0, 0.08));
+  filter: drop-shadow(0 20px 67px rgb(0 0 0 / 8%));
   border-radius: 20px;
 }
 
@@ -93,11 +96,6 @@ img {
   align-items: center;
 }
 
-.like-button {
-  all: unset;
-  cursor: pointer;
-}
-
 .likes-counter {
   font-size: 26px;
   margin-right: 8px;
@@ -105,16 +103,20 @@ img {
 
 .like-button {
   margin-left: 10px;
+  all: unset;
+  cursor: pointer;
   background-image: url("data:image/svg+xml,%3Csvg width='22' height='20' viewBox='0 0 22 20' fill='none' xmlns='http://www.w3.org/2000/svg' %3E%3Cpath d='M11.11 16.9482L11 17.0572L10.879 16.9482C5.654 12.2507 2.2 9.14441 2.2 5.99455C2.2 3.81471 3.85 2.17984 6.05 2.17984C7.744 2.17984 9.394 3.26975 9.977 4.75204H12.023C12.606 3.26975 14.256 2.17984 15.95 2.17984C18.15 2.17984 19.8 3.81471 19.8 5.99455C19.8 9.14441 16.346 12.2507 11.11 16.9482ZM15.95 0C14.036 0 12.199 0.882834 11 2.26703C9.801 0.882834 7.964 0 6.05 0C2.662 0 0 2.6267 0 5.99455C0 10.1035 3.74 13.4714 9.405 18.5613L11 20L12.595 18.5613C18.26 13.4714 22 10.1035 22 5.99455C22 2.6267 19.338 0 15.95 0Z' fill='%23BCEC30' /%3E%3C/svg%3E");
   background-repeat: no-repeat;
   width: 22px;
   height: 22px;
 }
 
+/* stylelint-disable */
 .-active-like {
   background-image: url("data:image/svg+xml,%3Csvg width='22' height='20' viewBox='0 0 22 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M15.95 0C14.036 0 12.199 0.882834 11 2.26703C9.801 0.882834 7.964 0 6.05 0C2.662 0 0 2.6267 0 5.99455C0 10.1035 3.74 13.4714 9.405 18.5613L11 20L12.595 18.5613C18.26 13.4714 22 10.1035 22 5.99455C22 2.6267 19.338 0 15.95 0Z' fill='%23BCEC30'/%3E%3C/svg%3E");
 }
 
+/* stylelint-enable */
 .add-form {
   padding: 20px;
   margin-top: 48px;
@@ -125,7 +127,7 @@ img {
 .add-form-name,
 .add-form-text {
   font-size: 16px;
-  font-family: Helvetica;
+  font-family: Helvetica, sans-serif;
   border-radius: 8px;
   border: none;
 }
@@ -136,7 +138,7 @@ img {
   margin-bottom: 12px;
 }
 
-.add-form-name_with-exit {
+.add-form-name-with-exit {
   display: flex;
   justify-content: space-between;
   margin: 0;
@@ -208,15 +210,6 @@ img {
   cursor: pointer;
 }
 
-.add-form-button:hover,
-.add-form-button-main:hover,
-.add-form-button-link:hover,
-.add-form-button-exit,
-.delete-button:hover,
-.edit-button:hover {
-  opacity: 0.9;
-}
-
 .delete-button {
   margin-top: 24px;
   font-size: 16px;
@@ -239,6 +232,15 @@ img {
   cursor: pointer;
 }
 
+.add-form-button:hover,
+.add-form-button-main:hover,
+.add-form-button-link:hover,
+.add-form-button-exit,
+.delete-button:hover,
+.edit-button:hover {
+  opacity: 0.9;
+}
+
 .edit-form-text {
   margin-top: 12px;
   padding: 22px;
@@ -246,11 +248,12 @@ img {
   resize: none;
   width: 500px;
   font-size: 16px;
-  font-family: Helvetica;
+  font-family: Helvetica, sans-serif;
   white-space: pre-line;
   border-radius: 8px;
   border: none;
 }
+
 .quote {
   font-size: 16px;
   background-color: #fff;
@@ -261,14 +264,15 @@ img {
   position: relative;
   padding-left: 87px;
 }
+
 .cssload-container-first {
   padding: 20px 192px;
   background: radial-gradient(
     75.42% 75.42% at 50% 42.37%,
-    rgba(53, 53, 53, 0) 22.92%,
+    rgb(53 53 53 / 0%) 22.92%,
     #7334ea 100%
   );
-  filter: drop-shadow(0px 20px 67px rgba(0, 0, 0, 0.08));
+  filter: drop-shadow(0 20px 67px rgb(0 0 0 / 8%));
   border-radius: 20px;
 }
 
@@ -278,13 +282,9 @@ img {
   position: absolute;
   top: 50%;
   left: 50%;
-  border: 1px solid rgb(204, 204, 204);
-  border-left-color: rgb(0, 0, 0);
+  border: 1px solid rgb(204 204 204);
+  border-left-color: rgb(0 0 0);
   border-radius: 974px;
-  -o-border-radius: 974px;
-  -ms-border-radius: 974px;
-  -webkit-border-radius: 974px;
-  -moz-border-radius: 974px;
 }
 
 .cssload-whirlpool {
@@ -292,34 +292,22 @@ img {
   height: 24px;
   width: 24px;
   animation: cssload-rotate 1150ms linear infinite;
-  -o-animation: cssload-rotate 1150ms linear infinite;
-  -ms-animation: cssload-rotate 1150ms linear infinite;
-  -webkit-animation: cssload-rotate 1150ms linear infinite;
-  -moz-animation: cssload-rotate 1150ms linear infinite;
 }
 
 .cssload-whirlpool::before {
-  content: "";
+  content: '';
   margin: -22px 0 0 -22px;
   height: 43px;
   width: 43px;
   animation: cssload-rotate 1150ms linear infinite;
-  -o-animation: cssload-rotate 1150ms linear infinite;
-  -ms-animation: cssload-rotate 1150ms linear infinite;
-  -webkit-animation: cssload-rotate 1150ms linear infinite;
-  -moz-animation: cssload-rotate 1150ms linear infinite;
 }
 
 .cssload-whirlpool::after {
-  content: "";
+  content: '';
   margin: -17px 0 0 -18px;
   height: 31px;
   width: 31px;
   animation: cssload-rotate 2300ms linear infinite;
-  -o-animation: cssload-rotate 2300ms linear infinite;
-  -ms-animation: cssload-rotate 2300ms linear infinite;
-  -webkit-animation: cssload-rotate 2300ms linear infinite;
-  -moz-animation: cssload-rotate 2300ms linear infinite;
 }
 
 @keyframes cssload-rotate {
@@ -328,26 +316,26 @@ img {
   }
 }
 
-@-o-keyframes cssload-rotate {
+@keyframes cssload-rotate {
   100% {
-    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
   }
 }
 
-@-ms-keyframes cssload-rotate {
+@keyframes cssload-rotate {
   100% {
-    -ms-transform: rotate(360deg);
+    transform: rotate(360deg);
   }
 }
 
-@-webkit-keyframes cssload-rotate {
+@keyframes cssload-rotate {
   100% {
-    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
   }
 }
 
-@-moz-keyframes cssload-rotate {
+@keyframes cssload-rotate {
   100% {
-    -moz-transform: rotate(360deg);
+    transform: rotate(360deg);
   }
 }
